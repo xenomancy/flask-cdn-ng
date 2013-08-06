@@ -1,40 +1,28 @@
-Flask-S3
-********
-.. module:: flask_s3
+Flask-CDN
+*********
+.. module:: flask_cdn
 
-Flask-S3 allows you to easily serve all your `Flask`_ application's
-static assets from `Amazon S3`_, without having to modify your
-templates.
+Flask-CDN allows you to easily serve all your `Flask`_ application's
+static assets from a CDN (like `Amazon Cloudfront`_), without having to modify
+your templates.
 
-.. _Amazon S3: http://aws.amazon.com/s3
+.. _Amazon Cloudfront: http://aws.amazon.com/cloudfront/
 .. _Flask: http://flask.pocoo.org/
 
 
 How it works
 ============
 
-Flask-S3 has two main functions:
+Flask-CDN has one main function:
 
- 1. Walk through your application's static folders, gather all your
-    static assets together, and upload them to a bucket of your choice
-    on S3;
- 
- 2. Replace the URLs that Flask's :func:`flask.url_for` function would
-    insert into your templates, with URLs that point to the static
-    assets in your S3 bucket.
+ 1. Replace the URLs that Flask's :func:`flask.url_for` function would
+    insert into your templates, with URLs that point to your CDN.
 
-The process of gathering and uploading your static assets to S3 need
-only be done once, and your application does not need to be running for
-it to work. The location of the S3 bucket can be inferred from Flask-S3
-`settings`_ specified in your Flask application, therefore when your
-application is running there need not be any communication between the
-Flask application and Amazon S3.
-
-Internally, every time ``url_for`` is called in one of your 
-application's templates, `flask_s3.url_for` is instead invoked. If the
-endpoint provided is deemed to refer to static assets, then the S3 URL
+Internally, every time ``url_for`` is called in one of your
+application's templates, `flask_cdn.url_for` is instead invoked. If the
+endpoint provided is deemed to refer to static assets, then the CDN URL
 for the asset specified in the `filename` argument is instead returned.
-Otherwise, `flask_s3.url_for` passes the call on to `flask.url_for`.
+Otherwise, `flask_cdn.url_for` passes the call on to `flask.url_for`.
 
 
 Installation
@@ -42,169 +30,95 @@ Installation
 
 If you use pip then installation is simply::
 
-    $ pip install flask-s3
+    $ pip install flask-cdn
 
 or, if you want the latest github version::
 
-    $ pip install git+git://github.com/e-dard/flask-s3.git
+    $ pip install git+git://github.com/wichitacode/flask-cdn.git
 
-You can also install Flask-S3 via Easy Install::
+You can also install Flask-CDN via Easy Install::
 
-    $ easy_install flask-s3
+    $ easy_install flask-cdn
 
 Dependencies
 ------------
 
-Aside from the obvious dependency of Flask itself, Flask-S3 makes use of
-the `boto`_ library for uploading assets to Amazon S3. **Note**:
-Flask-S3 currently only supports applications that use the `jinja2`_
-templating system.
+There are no additional dependencies besides Flask itself. **Note**: Flask-CDN
+currently only supports applications that use the `jinja2`_ templating system.
 
-.. _boto: http://docs.pythonboto.org/en/latest/
 .. _jinja2: http://jinja.pocoo.org/docs/
 
 
-Using Flask-S3
-============== 
+Using Flask-CDN
+===============
 
-Flask-S3 is incredibly simple to use. In order to start serving your
-Flask application's assets from Amazon S3, the first thing to do is let
-Flask-S3 know about your :class:`flask.Flask` application object.
+Flask-CDN is incredibly simple to use. In order to start serving your
+Flask application's assets from Amazon CDN, the first thing to do is let
+Flask-CDN know about your :class:`flask.Flask` application object.
 
 .. code-block:: python
 
     from flask import Flask
-    from flask_s3 import FlaskS3
+    from flask.ext.cdn import CDN
 
     app = Flask(__name__)
-    app.config['S3_BUCKET_NAME'] = 'mybucketname'
-    s3 = FlaskS3(app)
+    app.config['CDN_DOMAIN'] = 'mycdnname.cloudfront.net'
+    CDN(app)
 
 In many cases, however, one cannot expect a Flask instance to be ready
 at import time, and a common pattern is to return a Flask instance from
 within a function only after other configuration details have been taken
-care of. In these cases, Flask-S3 provides a simple function,
+care of. In these cases, Flask-CDN provides a simple function,
 ``init_app``, which takes your application as an argument.
 
 .. code-block:: python
 
     from flask import Flask
-    from flask_s3 import FlaskS3
+    from flask.ext.cdn import FlaskCDN
 
-    s3 = FlaskS3()
+    cdn = CDN()
 
     def start_app():
         app = Flask(__name__)
-        s3.init_app(app)
+        cdn.init_app(app)
         return app
 
-In terms of getting your application to use external Amazon S3 URLs when
+In terms of getting your application to use external CDN URLs when
 referring to your application's static assets, passing your ``Flask``
-object to the ``FlaskS3`` object is all that needs to be done. Once your
+object to the ``CDN`` object is all that needs to be done. Once your
 app is running, any templates that contained relative static asset
-locations, will instead contain hosted counterparts on Amazon S3.
-
-Uploading your Static Assets
-----------------------------
-
-You only need to upload your static assets to Amazon S3 once. Of course,
-if you add or modify your existing assets then you will need to repeat
-the uploading process.
-
-Uploading your static assets from a Python console is as simple as
-follows.
-
-.. code-block:: python
-    
-    >>> import flask_s3
-    >>> from my_application import app
-    >>> flask_s3.create_all(app)
-    >>>
-
-Flask-S3 will proceed to walk through your application's static assets,
-including those belonging to *registered* `blueprints`_, and upload them
-to your Amazon S3 bucket.
-
-.. _blueprints: http://flask.pocoo.org/docs/blueprints/
+locations, will instead be pulled from your CDN.
 
 Static Asset URLs
-~~~~~~~~~~~~~~~~~
+-----------------
 
-Within your bucket on S3, Flask-S3 replicates the static file hierarchy
-defined in your application object and any registered blueprints. URLs
-generated by Flask-S3 will look like the following:
+URLs generated by Flask-CDN will look like the following:
 
 ``/static/foo/style.css`` becomes
-``https://mybucketname.s3.amazonaws.com/static/foo/style.css``, assuming
-that ``mybucketname`` is the name of your S3 bucket, and you have chosen
-to have assets served over HTTPS.
+``https://mycdnname.cloudfront.net/static/foo/style.css``, assuming
+that ``mycdnname.cloudfront.net`` is the domain of your CDN, and you have
+chosen to have assets served over HTTPS.
 
-Setting Custom HTTP Headers
-~~~~~~~~~~~~~~~~~
-
-To set custom HTTP headers on the files served from S3 specify what
-headers you want to use with the `S3_HEADERS` option.
-
-.. code-block:: python
-
-    S3_HEADERS = {
-        'Expires': 'Thu, 15 Apr 2010 20:00:00 GMT',
-        'Cache-Control': 'max-age=86400',
-    }
-
-See `Yahoo!`_ more information on how to set good values for your headers.
-
-.. _Yahoo!: http://developer.yahoo.com/performance/rules.html#expires
-
-.. _settings:
-.. _configuration:
-
-Flask-S3 Options
-----------------
+Flask-CDN Options
+-----------------
 
 Within your Flask application's settings you can provide the following
-settings to control the behaviour of Flask-S3. None of the settings are
-required, but if not present, some will need to be provided when
-uploading assets to S3.
+settings to control the behaviour of Flask-CDN. None of the settings are
+required.
 
 =========================== ===================================================
-`AWS_ACCESS_KEY_ID`         Your AWS access key. This does not need to be 
-                            stored in your configuration if you choose to pass
-                            it directly when uploading your assets.
-`AWS_SECRET_ACCESS_KEY`     Your AWS secret key. As with the access key, this 
-                            need not be stored in your configuration if passed
-                            in to `create_all`.
-`S3_BUCKET_DOMAIN`          The domain part of the URI for your S3 bucket. You 
-                            probably won't need to change this.
-                            **Default:** ``u's3.amazonaws.com'``
-'S3_CDN_DOMAIN'             AWS makes it easy to attach CloudFront to an S3
-                            bucket. If you want to use this or another CDN,
-                            set the base domain here. This is distinct from the
-                            'S3_BUCKET_DOMAIN` since it will not include the
-                            bucket name in the base url.
-`S3_BUCKET_NAME`            The desired name for your Amazon S3 bucket. Note: 
-                            the name will be visible in all your assets' URLs.
-`S3_USE_HTTPS`              Specifies whether or not to serve your assets
-                            stored in S3 over HTTPS.
-                            **Default:** `True` 
-`USE_S3`                    This setting allows you to toggle whether Flask-S3 
-                            is active or not. When set to `False` your 
-                            application's templates will revert to including
-                            static asset locations determined by
-                            `flask.url_for`.
-                            **Default:** `True`
-`USE_S3_DEBUG`              By default, Flask-S3 will be switched off when 
-                            running your application in `debug`_ mode, so that 
+`CDN_DOMAIN`                AWS makes it easy to serve your static assets from
+                            your domain. Set the base domain here.
+                            **Default:** `None`
+`CDN_HTTPS`                 Specifies whether or not to serve your assets over
+                            HTTPS.
+                            **Default:** `False`
+`CDN_DEBUG`                 By default, Flask-CDN will be switched off when
+                            running your application in `debug`_ mode, so that
                             your templates include static asset locations
                             specified by `flask.url_for`. If you wish to enable
-                            Flask-S3 in debug mode, set this value to `True`.
-                            **Note**: if `USE_S3` is set to `False` then
-                            templates will always include asset locations
-                            specified by `flask.url_for`.
-`S3_HEADERS`                Sets custom headers to be sent with each file to S3.
-                            **Default:** `{}`
-`S3_CACHE_CONTROL`          **Deprecated**. Please use `S3_HEADERS` instead.
-`S3_USE_CACHE_CONTROL`      **Deprecated**. Please use `S3_HEADERS` instead.
+                            Flask-CDN in debug mode, set this value to `True`.
+                            **Default:** `False`
 =========================== ===================================================
 
 .. _debug: http://flask.pocoo.org/docs/config/#configuration-basics
@@ -213,17 +127,13 @@ uploading assets to S3.
 API Documentation
 =================
 
-Flask-S3 is a very simple extension. The few exposed objects, methods
+Flask-CDN is a very simple extension. The few exposed objects, methods
 and functions are as follows.
 
-The FlaskS3 Object
+The CDN Object
 ------------------
-.. autoclass:: FlaskS3
+.. autoclass:: CDN
 
     .. automethod:: init_app
-
-S3 Interaction
---------------
-.. autofunction:: create_all
 
 .. autofunction:: url_for

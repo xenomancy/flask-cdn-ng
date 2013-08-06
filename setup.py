@@ -1,30 +1,29 @@
 """
-Flask-S3
--------------
+Flask-CDN
+---------
 
-Easily serve your static files from Amazon S3.
+Seamlessly serve your static files from a CDN.
 """
 from setuptools import setup
 
 
 setup(
-    name='Flask-S3',
-    version='0.1.4',
-    url='http://github.com/e-dard/flask-s3',
-    license='WTFPL',
-    author='Edward Robinson',
-    author_email='hi@edd.io',
-    description='Seamlessly serve the static files of your Flask app from Amazon S3',
+    name='Flask-CDN',
+    version='0.9.0',
+    url='https://github.com/wichitacode/flask-cdn',
+    license='MIT',
+    author='William Fagan',
+    author_email='will@wichitacode.com',
+    description='Seamlessly serve the app\'s static files from a CDN',
     long_description=__doc__,
-    py_modules=['flask_s3'],
+    py_modules=['flask_cdn'],
     zip_safe=False,
     include_package_data=True,
     platforms='any',
     install_requires=[
-        'Flask',
-        'Boto>=2.5.2'
+        'Flask'
     ],
-    tests_require=['nose', 'mock'],
+    test_suite="tests",
     classifiers=[
         'Environment :: Web Environment',
         'Intended Audience :: Developers',

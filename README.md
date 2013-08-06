@@ -1,10 +1,10 @@
-flask-s3
+flask-cdn
 ========
 
-![](https://api.travis-ci.org/e-dard/flask-s3.png)
+[![Build Status](https://travis-ci.org/wichitacode/flask-cdn.png)](https://travis-ci.org/wichitacode/flask-cdn)
 
-Seamlessly serve the static assets of your Flask app from Amazon S3. 
+Seamlessly serve your static files from a CDN.
 
 Documentation
 -------------
-The latest documentation for Flask-S3 can be found [here](https://flask-s3.readthedocs.org/en/v0.1.4/).
+The latest documentation for Flask-CDN can be found [here](https://flask-cdn.readthedocs.org/en/latest/).

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# flask-s3 documentation build configuration file, created by
+# flask-cdn documentation build configuration file, created by
 # sphinx-quickstart on Sat Sep  8 13:10:46 2012.
 #
 # This file is execfile()d with the current directory set to its containing dir.
@@ -40,8 +40,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'flask-S3'
-copyright = u'2012, Edward Robinson'
+project = u'flask-cdn'
+copyright = u'2013, Wichita Code'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -166,7 +166,7 @@ html_static_path = ['_static']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'flask-s3doc'
+htmlhelp_basename = 'flask-cdndoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -185,8 +185,8 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'flask-s3.tex', u'flask-s3 Documentation',
-   u'Edward Robinson', 'manual'),
+  ('index', 'flask-cdn.tex', u'flask-cdn Documentation',
+   u'Wichita Code', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -215,8 +215,8 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'flask-s3', u'flask-s3 Documentation',
-     [u'Edward Robinson'], 1)
+    ('index', 'flask-cdn', u'flask-cdn Documentation',
+     [u'Wichita Code'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -229,8 +229,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'flask-s3', u'flask-s3 Documentation',
-   u'Edward Robinson', 'flask-s3', 'Flask-S3 allows you to server your static assets from Amazon S3.',
+  ('index', 'flask-cdn', u'flask-cdn Documentation',
+   u'Wichita Code', 'flask-cdn', 'Easily serve your static files from a CDN.',
    'Miscellaneous'),
 ]
 
@@ -246,7 +246,7 @@ texinfo_documents = [
 sys.path.append(os.path.abspath('_themes'))
 html_theme_path = ['_themes']
 html_theme = 'flask_small'
-html_theme_options = dict(github_fork='e-dard/flask-s3', 
+html_theme_options = dict(github_fork='wichitacode/flask-cdn', 
                           index_logo=False)
 
 
