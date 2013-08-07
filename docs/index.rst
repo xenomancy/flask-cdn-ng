@@ -6,17 +6,16 @@ Flask-CDN allows you to easily serve all your `Flask`_ application's
 static assets from a CDN (like `Amazon Cloudfront`_), without having to modify
 your templates.
 
-.. _Amazon Cloudfront: http://aws.amazon.com/cloudfront/
+.. _Amazon Cloudfront: https://aws.amazon.com/cloudfront/
 .. _Flask: http://flask.pocoo.org/
 
 
 How it works
 ============
 
-Flask-CDN has one main function:
-
- 1. Replace the URLs that Flask's :func:`flask.url_for` function would
-    insert into your templates, with URLs that point to your CDN.
+Flask-CDN replaces the URLs that Flask's :func:`flask.url_for` function would
+insert into your templates, with URLs that point to your CDN. This makes
+setting up an origin pull CDN extremely easy.
 
 Internally, every time ``url_for`` is called in one of your
 application's templates, `flask_cdn.url_for` is instead invoked. If the
@@ -122,6 +121,35 @@ required.
 =========================== ===================================================
 
 .. _debug: http://flask.pocoo.org/docs/config/#configuration-basics
+
+
+Serve Static Assets with CloudFront
+===================================
+
+CloudFront is a very simple way to seamlessly serve your static assets with
+it’s CDN. When a request comes into CloudFront, if the asset is not on the CDN
+or has expired, then CloudFront can get the asset from an “origin server”.
+This type of setup is called an origin pull CDN.
+
+To setup a new CloudFront “Distribution”:
+
+- Signup for an `AWS Account`_
+- Open the `Cloudfront Management Console`_
+- Select Create Distribution
+- Leave Download selected as the delivery method and select Continue
+- In the Origin Domain Name field enter the domain name for your application
+- Keep the other default values as-is and select Create Distribution
+
+It will now take a few minutes for AWS to create the CloudFront distribution.
+
+- Set CDN_DOMAIN in your Flask app to the newly created 'Domain Name' of your
+  Cloudfront CDN.
+
+Then you are done! Next time someone visits your site Cloudfront will cache
+and serve everything under the /static/ directory.
+
+.. _AWS Account: https://aws.amazon.com/
+.. _Cloudfront Management Console: https://console.aws.amazon.com/cloudfront/
 
 
 API Documentation

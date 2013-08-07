@@ -1,5 +1,5 @@
-flask-cdn
-========
+Flask-CDN
+=========
 
 [![Build Status](https://travis-ci.org/wichitacode/flask-cdn.png)](https://travis-ci.org/wichitacode/flask-cdn)
 
