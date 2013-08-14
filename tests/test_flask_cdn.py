@@ -1,4 +1,5 @@
 import unittest
+import os
 
 from flask import Flask, render_template_string
 
@@ -24,6 +25,10 @@ class DefaultsTest(unittest.TestCase):
         """ Tests CDN_HTTPS default value is correctly set. """
         self.assertEquals(self.app.config['CDN_HTTPS'], False)
 
+    def test_timestamp_default(self):
+        """ Tests CDN_TIMESTAMP default value is correctly set. """
+        self.assertEquals(self.app.config['CDN_TIMESTAMP'], True)
+
 
 class UrlTests(unittest.TestCase):
     def setUp(self):
@@ -31,6 +36,7 @@ class UrlTests(unittest.TestCase):
         self.app.testing = True
 
         self.app.config['CDN_DOMAIN'] = 'mycdnname.cloudfront.net'
+        self.app.config['CDN_TIMESTAMP'] = False
 
         @self.app.route('/<url_for_string>')
         def a(url_for_string):
@@ -77,6 +83,20 @@ class UrlTests(unittest.TestCase):
         self.assertEquals(self.client_get(ufs).data, exp)
 
         self.app.config['CDN_HTTPS'] = False
+        exp = 'http://mycdnname.cloudfront.net/static/bah.js'
+        self.assertEquals(self.client_get(ufs).data, exp)
+
+    def test_url_for_timestamp(self):
+        """ Tests CDN_TIMESTAMP correctly affects generated URLs. """
+        ufs = "{{ url_for('static', filename='bah.js') }}"
+
+        self.app.config['CDN_TIMESTAMP'] = True
+        path = os.path.join(self.app.static_folder, 'bah.js')
+        ts = int(os.path.getmtime(path))
+        exp = 'http://mycdnname.cloudfront.net/static/bah.js?t={}'.format(ts)
+        self.assertEquals(self.client_get(ufs).data, exp)
+
+        self.app.config['CDN_TIMESTAMP'] = False
         exp = 'http://mycdnname.cloudfront.net/static/bah.js'
         self.assertEquals(self.client_get(ufs).data, exp)
 

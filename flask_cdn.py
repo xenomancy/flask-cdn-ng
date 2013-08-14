@@ -1,3 +1,5 @@
+import os
+
 from flask import url_for as flask_url_for
 from flask import current_app
 
@@ -22,11 +24,14 @@ def url_for(endpoint, **values):
 
     if endpoint == 'static':
         scheme = 'http'
-
         if app.config['CDN_HTTPS']:
             scheme = 'https'
 
         urls = app.url_map.bind(app.config['CDN_DOMAIN'], url_scheme=scheme)
+
+        if app.config['CDN_TIMESTAMP']:
+            path = os.path.join(app.static_folder, values['filename'])
+            values['t'] = int(os.path.getmtime(path))
 
         return urls.build(endpoint, values=values, force_external=True)
 
@@ -59,7 +64,8 @@ class CDN(object):
     def init_app(self, app):
         defaults = [('CDN_DOMAIN', None),
                     ('CDN_DEBUG', False),
-                    ('CDN_HTTPS', False)]
+                    ('CDN_HTTPS', False),
+                    ('CDN_TIMESTAMP', True)]
 
         for k, v in defaults:
             app.config.setdefault(k, v)
