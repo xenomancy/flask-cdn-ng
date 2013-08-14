@@ -2,7 +2,7 @@
 Flask-CDN
 ---------
 
-Seamlessly serve your static files from a CDN.
+Serve the static files in your Flask app from a CDN.
 """
 from setuptools import setup
 
@@ -14,7 +14,7 @@ setup(
     license='MIT',
     author='William Fagan',
     author_email='will@wichitacode.com',
-    description='Seamlessly serve the app\'s static files from a CDN',
+    description='Serve the static files in your Flask app from a CDN.',
     long_description=__doc__,
     py_modules=['flask_cdn'],
     zip_safe=False,

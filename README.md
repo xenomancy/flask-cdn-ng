@@ -3,7 +3,7 @@ Flask-CDN
 
 [![Build Status](https://travis-ci.org/wichitacode/flask-cdn.png)](https://travis-ci.org/wichitacode/flask-cdn)
 
-Seamlessly serve your static files from a CDN.
+Serve the static files in your Flask app from a CDN.
 
 Documentation
 -------------
