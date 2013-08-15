@@ -73,7 +73,7 @@ care of. In these cases, Flask-CDN provides a simple function,
 .. code-block:: python
 
     from flask import Flask
-    from flask.ext.cdn import FlaskCDN
+    from flask.ext.cdn import CDN
 
     cdn = CDN()
 
@@ -106,12 +106,14 @@ settings to control the behaviour of Flask-CDN. None of the settings are
 required.
 
 =========================== ===================================================
-`CDN_DOMAIN`                AWS makes it easy to serve your static assets from
-                            your domain. Set the base domain here.
+`CDN_DOMAIN`                Set the base domain for your CDN here.
                             **Default:** `None`
 `CDN_HTTPS`                 Specifies whether or not to serve your assets over
                             HTTPS.
                             **Default:** `False`
+`CDN_TIMESTAMP`             Specifies whether or not to add a timestamp to the
+                            generated urls.
+                            **Default:** `True`
 `CDN_DEBUG`                 By default, Flask-CDN will be switched off when
                             running your application in `debug`_ mode, so that
                             your templates include static asset locations
@@ -138,6 +140,7 @@ To setup a new CloudFront “Distribution”:
 - Select Create Distribution
 - Leave Download selected as the delivery method and select Continue
 - In the Origin Domain Name field enter the domain name for your application
+- Change `Forward Query Strings` to `Yes`
 - Keep the other default values as-is and select Create Distribution
 
 It will now take a few minutes for AWS to create the CloudFront distribution.
