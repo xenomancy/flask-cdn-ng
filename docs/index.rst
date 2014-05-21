@@ -109,8 +109,9 @@ required.
 `CDN_DOMAIN`                Set the base domain for your CDN here.
                             **Default:** `None`
 `CDN_HTTPS`                 Specifies whether or not to serve your assets over
-                            HTTPS.
-                            **Default:** `False`
+                            HTTPS. If not specified the asset will be served
+                            by the same method the request comes in as.
+                            **Default:** `None`
 `CDN_TIMESTAMP`             Specifies whether or not to add a timestamp to the
                             generated urls.
                             **Default:** `True`
