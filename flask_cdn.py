@@ -1,7 +1,7 @@
 import os
 
 from flask import url_for as flask_url_for
-from flask import current_app
+from flask import current_app, request
 
 
 def url_for(endpoint, **values):
@@ -23,8 +23,10 @@ def url_for(endpoint, **values):
         return flask_url_for(endpoint, **values)
 
     if endpoint == 'static':
+        cdn_https = app.config['CDN_HTTPS']
+
         scheme = 'http'
-        if app.config['CDN_HTTPS']:
+        if cdn_https is True or (cdn_https is None and request.is_secure):
             scheme = 'https'
 
         urls = app.url_map.bind(app.config['CDN_DOMAIN'], url_scheme=scheme)
