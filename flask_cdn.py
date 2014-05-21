@@ -66,7 +66,7 @@ class CDN(object):
     def init_app(self, app):
         defaults = [('CDN_DOMAIN', None),
                     ('CDN_DEBUG', False),
-                    ('CDN_HTTPS', False),
+                    ('CDN_HTTPS', None),
                     ('CDN_TIMESTAMP', True)]
 
         for k, v in defaults:

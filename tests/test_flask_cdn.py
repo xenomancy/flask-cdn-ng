@@ -23,7 +23,7 @@ class DefaultsTest(unittest.TestCase):
 
     def test_https_default(self):
         """ Tests CDN_HTTPS default value is correctly set. """
-        self.assertEquals(self.app.config['CDN_HTTPS'], False)
+        self.assertEquals(self.app.config['CDN_HTTPS'], None)
 
     def test_timestamp_default(self):
         """ Tests CDN_TIMESTAMP default value is correctly set. """
