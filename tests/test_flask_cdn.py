@@ -46,16 +46,13 @@ class UrlTests(unittest.TestCase):
         def b():
             return render_template_string("{{ url_for('b') }}")
 
-    def client_get(self, ufs, secure=False, headers={}):
+    def client_get(self, ufs, secure=False):
         CDN(self.app)
         client = self.app.test_client()
-
         if secure:
-            base_url = 'https://localhost'
+            return client.get('/%s' % ufs, base_url='https://localhost')
         else:
-            base_url = 'http://localhost'
-
-        return client.get('/%s' % ufs, base_url=base_url, headers=headers)
+            return client.get('/%s' % ufs)
 
     def test_url_for(self):
         """ Tests static endpoint correctly affects generated URLs. """
@@ -86,22 +83,18 @@ class UrlTests(unittest.TestCase):
 
         https_exp = 'https://mycdnname.cloudfront.net/static/bah.js'
         http_exp = 'http://mycdnname.cloudfront.net/static/bah.js'
-        proto = {'X-Forwarded-Proto': 'https'}
 
         self.app.config['CDN_HTTPS'] = True
         self.assertEquals(self.client_get(ufs, secure=True).data, https_exp)
         self.assertEquals(self.client_get(ufs).data, https_exp)
-        self.assertEquals(self.client_get(ufs, headers=proto).data, https_exp)
 
         self.app.config['CDN_HTTPS'] = False
         self.assertEquals(self.client_get(ufs, secure=True).data, http_exp)
         self.assertEquals(self.client_get(ufs).data, http_exp)
-        self.assertEquals(self.client_get(ufs, headers=proto).data, http_exp)
 
         self.app.config['CDN_HTTPS'] = None
         self.assertEquals(self.client_get(ufs, secure=True).data, https_exp)
         self.assertEquals(self.client_get(ufs).data, http_exp)
-        self.assertEquals(self.client_get(ufs, headers=proto).data, https_exp)
 
     def test_url_for_timestamp(self):
         """ Tests CDN_TIMESTAMP correctly affects generated URLs. """
