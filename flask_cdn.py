@@ -24,10 +24,14 @@ def url_for(endpoint, **values):
 
     if endpoint == 'static':
         cdn_https = app.config['CDN_HTTPS']
+        proto = request.headers.get('X-Forwarded-Proto', None)
 
         scheme = 'http'
-        if cdn_https is True or (cdn_https is None and request.is_secure):
+        if cdn_https is True:
             scheme = 'https'
+        elif cdn_https is None:
+            if request.is_secure or proto == 'https':
+                scheme = 'https'
 
         urls = app.url_map.bind(app.config['CDN_DOMAIN'], url_scheme=scheme)
 
