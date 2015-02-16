@@ -19,7 +19,7 @@ def url_for(endpoint, **values):
     """
     app = current_app
 
-    if app.debug and not app.config['CDN_DEBUG']:
+    if app.debug:
         return flask_url_for(endpoint, **values)
 
     if endpoint == 'static' or endpoint.endswith('.static'):
@@ -69,7 +69,6 @@ class CDN(object):
 
     def init_app(self, app):
         defaults = [('CDN_DOMAIN', None),
-                    ('CDN_DEBUG', False),
                     ('CDN_HTTPS', None),
                     ('CDN_TIMESTAMP', True)]
 

@@ -17,10 +17,6 @@ class DefaultsTest(unittest.TestCase):
         """ Tests CDN_DOMAIN default value is correctly set. """
         self.assertEquals(self.app.config['CDN_DOMAIN'], None)
 
-    def test_debug_default(self):
-        """ Tests CDN_DEBUG default value is correctly set. """
-        self.assertEquals(self.app.config['CDN_DEBUG'], False)
-
     def test_https_default(self):
         """ Tests CDN_HTTPS default value is correctly set. """
         self.assertEquals(self.app.config['CDN_HTTPS'], None)
@@ -65,15 +61,10 @@ class UrlTests(unittest.TestCase):
         self.assertEquals(self.client_get(ufs).data, exp)
 
     def test_url_for_debug(self):
-        """ Tests CDN_DEBUG correctly affects generated URLs. """
+        """ Tests app.debug correctly affects generated URLs. """
         self.app.debug = True
         ufs = "{{ url_for('static', filename='bah.js') }}"
 
-        self.app.config['CDN_DEBUG'] = True
-        exp = 'http://mycdnname.cloudfront.net/static/bah.js'
-        self.assertEquals(self.client_get(ufs).data, exp)
-
-        self.app.config['CDN_DEBUG'] = False
         exp = '/static/bah.js'
         self.assertEquals(self.client_get(ufs).data, exp)
 

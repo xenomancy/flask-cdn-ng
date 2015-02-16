@@ -115,12 +115,6 @@ required.
 `CDN_TIMESTAMP`             Specifies whether or not to add a timestamp to the
                             generated urls.
                             **Default:** `True`
-`CDN_DEBUG`                 By default, Flask-CDN will be switched off when
-                            running your application in `debug`_ mode, so that
-                            your templates include static asset locations
-                            specified by `flask.url_for`. If you wish to enable
-                            Flask-CDN in debug mode, set this value to `True`.
-                            **Default:** `False`
 =========================== ===================================================
 
 .. _debug: http://flask.pocoo.org/docs/config/#configuration-basics
