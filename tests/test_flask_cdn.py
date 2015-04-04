@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 import unittest
 import os
 
@@ -53,12 +55,12 @@ class UrlTests(unittest.TestCase):
     def test_url_for(self):
         """ Tests static endpoint correctly affects generated URLs. """
         # non static endpoint url_for in template
-        self.assertEquals(self.client_get('').data, '/')
+        self.assertEquals(self.client_get('').get_data(True), '/')
 
         # static endpoint url_for in template
         ufs = "{{ url_for('static', filename='bah.js') }}"
         exp = 'http://mycdnname.cloudfront.net/static/bah.js'
-        self.assertEquals(self.client_get(ufs).data, exp)
+        self.assertEquals(self.client_get(ufs).get_data(True), exp)
 
     def test_url_for_debug(self):
         """ Tests app.debug correctly affects generated URLs. """
@@ -66,7 +68,7 @@ class UrlTests(unittest.TestCase):
         ufs = "{{ url_for('static', filename='bah.js') }}"
 
         exp = '/static/bah.js'
-        self.assertEquals(self.client_get(ufs).data, exp)
+        self.assertEquals(self.client_get(ufs).get_data(True), exp)
 
     def test_url_for_https(self):
         """ Tests CDN_HTTPS correctly affects generated URLs. """
@@ -76,16 +78,19 @@ class UrlTests(unittest.TestCase):
         http_exp = 'http://mycdnname.cloudfront.net/static/bah.js'
 
         self.app.config['CDN_HTTPS'] = True
-        self.assertEquals(self.client_get(ufs, secure=True).data, https_exp)
-        self.assertEquals(self.client_get(ufs).data, https_exp)
+        self.assertEquals(self.client_get(ufs, secure=True).get_data(True),
+                          https_exp)
+        self.assertEquals(self.client_get(ufs).get_data(True), https_exp)
 
         self.app.config['CDN_HTTPS'] = False
-        self.assertEquals(self.client_get(ufs, secure=True).data, http_exp)
-        self.assertEquals(self.client_get(ufs).data, http_exp)
+        self.assertEquals(self.client_get(ufs, secure=True).get_data(True),
+                          http_exp)
+        self.assertEquals(self.client_get(ufs).get_data(True), http_exp)
 
         self.app.config['CDN_HTTPS'] = None
-        self.assertEquals(self.client_get(ufs, secure=True).data, https_exp)
-        self.assertEquals(self.client_get(ufs).data, http_exp)
+        self.assertEquals(self.client_get(ufs, secure=True).get_data(True),
+                          https_exp)
+        self.assertEquals(self.client_get(ufs).get_data(True), http_exp)
 
     def test_url_for_timestamp(self):
         """ Tests CDN_TIMESTAMP correctly affects generated URLs. """
@@ -94,12 +99,12 @@ class UrlTests(unittest.TestCase):
         self.app.config['CDN_TIMESTAMP'] = True
         path = os.path.join(self.app.static_folder, 'bah.js')
         ts = int(os.path.getmtime(path))
-        exp = 'http://mycdnname.cloudfront.net/static/bah.js?t={}'.format(ts)
-        self.assertEquals(self.client_get(ufs).data, exp)
+        exp = 'http://mycdnname.cloudfront.net/static/bah.js?t={0}'.format(ts)
+        self.assertEquals(self.client_get(ufs).get_data(True), exp)
 
         self.app.config['CDN_TIMESTAMP'] = False
         exp = 'http://mycdnname.cloudfront.net/static/bah.js'
-        self.assertEquals(self.client_get(ufs).data, exp)
+        self.assertEquals(self.client_get(ufs).get_data(True), exp)
 
 
 if __name__ == '__main__':
