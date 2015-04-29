@@ -1,10 +1,11 @@
 from __future__ import unicode_literals
 
-import unittest
+
 import os
+import os.path
+import unittest
 
-from flask import Flask, render_template_string
-
+from flask import Flask, Blueprint, render_template_string
 from flask.ext.cdn import CDN
 
 
@@ -105,6 +106,47 @@ class UrlTests(unittest.TestCase):
         self.app.config['CDN_TIMESTAMP'] = False
         exp = 'http://mycdnname.cloudfront.net/static/bah.js'
         self.assertEquals(self.client_get(ufs).get_data(True), exp)
+
+
+class BlueprintTest(unittest.TestCase):
+    def setUp(self):
+        self.app = Flask(__name__)
+        self.app.testing = True
+        self.app.config['CDN_DOMAIN'] = 'mycdnname.cloudfront.net'
+        self.app.config['CDN_TIMESTAMP'] = True
+        CDN(self.app)
+
+        test_bp = Blueprint('test_bp', 'test')
+        @test_bp.route('/without_static/<url_for_string>')
+        def a(url_for_string):
+            return render_template_string(url_for_string)
+        self.app.register_blueprint(test_bp)
+
+        test2_bp = Blueprint('test2_bp', 'test2', static_folder=self.app.static_folder + '_bp')
+        @test2_bp.route('/with_static/<url_for_string>')
+        def b(url_for_string):
+            return render_template_string(url_for_string)
+        self.app.register_blueprint(test2_bp)
+
+
+    def test_blueprint_without_static_folder(self):
+        ufs = "{{ url_for('static', filename='bah.js') }}"
+        client = self.app.test_client()
+        response = client.get('/without_static/%s' % ufs)
+        path = os.path.join(self.app.static_folder, 'bah.js')
+        ts = int(os.path.getmtime(path))
+        exp = 'http://mycdnname.cloudfront.net/static/bah.js?t={0}'.format(ts)
+        self.assertEquals(response.get_data(True), exp)
+
+
+    def test_blueprint_with_static_folder(self):
+        ufs = "{{ url_for('static', filename='bah_bp.js') }}"
+        client = self.app.test_client()
+        response = client.get('/with_static/%s' % ufs)
+        path = os.path.join(self.app.blueprints['test2_bp'].static_folder, 'bah_bp.js')
+        ts = int(os.path.getmtime(path))
+        exp = 'http://mycdnname.cloudfront.net/static/bah_bp.js?t={0}'.format(ts)
+        self.assertEquals(response.get_data(True), exp)
 
 
 if __name__ == '__main__':
