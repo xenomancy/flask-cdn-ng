@@ -106,6 +106,9 @@ settings to control the behaviour of Flask-CDN. None of the settings are
 required.
 
 =========================== ===================================================
+`CDN_DEBUG`                 Activate Debug mode to return relative url rather
+                            than CDN enabled ones.
+                            **Default:** `app.debug`
 `CDN_DOMAIN`                Set the base domain for your CDN here.
                             **Default:** `None`
 `CDN_HTTPS`                 Specifies whether or not to serve your assets over
