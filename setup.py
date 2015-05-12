@@ -1,5 +1,8 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 """
-Flask-CDN
+Flask-CDN-NG
 ---------
 
 Serve the static files in your Flask app from a CDN.
@@ -8,12 +11,12 @@ from setuptools import setup
 
 
 setup(
-    name='Flask-CDN',
-    version='1.2.0',
-    url='https://github.com/wichitacode/flask-cdn',
+    name='Flask-CDN-NG',
+    version='0.1.0',
+    url='https://github.com/s-m-i-t-a/flask-cdn-ng',
     license='MIT',
-    author='William Fagan',
-    author_email='will@wichitacode.com',
+    author='Jindřich K. Smitka',
+    author_email='smitka.j@gmail.com',
     description='Serve the static files in your Flask app from a CDN.',
     long_description=__doc__,
     py_modules=['flask_cdn'],

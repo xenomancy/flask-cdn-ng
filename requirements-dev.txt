@@ -1,0 +1,20 @@
+-r requirements.txt
+
+coverage
+pep8<1.6
+pylint
+flake8
+pyflakes
+mccabe
+ipython
+pytest
+pytest-cov
+tox
+coveralls
+mock
+
+# generuje tagy pro baliky ve virtualenv
+z3c.recipe.tag
+
+# docs
+Sphinx
