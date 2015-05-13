@@ -43,6 +43,7 @@ output/*/index.html
 docs/_build
 
 .envs
+
 tags
 TAGS
 ID
