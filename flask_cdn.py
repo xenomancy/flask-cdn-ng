@@ -4,6 +4,16 @@ from flask import url_for as flask_url_for
 from flask import current_app, request
 
 
+def _get_checksum_for(path):
+    """
+    Return checksum for `path`.
+
+    Download MANIFEST file from `CDN_MANIFEST_URL`
+    and find checksum for given path.
+    """
+    pass
+
+
 def url_for(endpoint, **values):
     """
     Generates a URL to the given endpoint.
@@ -39,6 +49,8 @@ def url_for(endpoint, **values):
                 static_folder = app.static_folder
             path = os.path.join(static_folder, values['filename'])
             values['t'] = int(os.path.getmtime(path))
+        elif app.config['CDN_MANIFEST']:
+            values['c'] = _get_checksum_for(values['filename'])
 
         return urls.build(endpoint, values=values, force_external=True)
 
@@ -72,6 +84,8 @@ class CDN(object):
         defaults = [('CDN_DEBUG', app.debug),
                     ('CDN_DOMAIN', None),
                     ('CDN_HTTPS', None),
+                    ('CDN_MANIFEST', False),
+                    ('CDN_MANIFEST_URL', None),
                     ('CDN_TIMESTAMP', True)]
 
         for k, v in defaults:
