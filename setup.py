@@ -24,7 +24,8 @@ setup(
     include_package_data=True,
     platforms='any',
     install_requires=[
-        'Flask'
+        'Flask',
+        'requests',
     ],
     test_suite='tests',
     classifiers=[
