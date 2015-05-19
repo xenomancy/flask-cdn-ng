@@ -12,7 +12,7 @@ from setuptools import setup
 
 setup(
     name='Flask-CDN-NG',
-    version='0.1.0',
+    version='1.3.0',
     url='https://github.com/s-m-i-t-a/flask-cdn-ng',
     license='MIT',
     author='Jindřich K. Smitka',
