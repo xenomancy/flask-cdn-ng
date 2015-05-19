@@ -7,4 +7,4 @@
 Serve the static files in your Flask app from a CDN.
 
 ## Documentation
-The latest documentation for Flask-CDN can be found [here](https://flask-cdn-ng.readthedocs.org/en/latest/).
+The latest documentation for Flask-CDN-NG can be found [here](https://flask-cdn-ng.readthedocs.org/en/latest/).
