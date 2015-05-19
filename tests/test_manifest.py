@@ -2,9 +2,10 @@
 
 from __future__ import unicode_literals
 
+import six
 import pytest
 
-from flask_cdn import _get_checksum_for
+from flask_cdn import _get_checksum_for, _download_manifest, CDNManifestUrlError, CDNFileNotFoundInManifest
 
 
 cdn_manifest = pytest.mark.cdn_manifest
@@ -55,3 +56,26 @@ def test_return_checksum_for_given_path(filename, checksum, manifest_list):
     result = _get_checksum_for('static/%s' % filename, manifest_list)
 
     assert result == checksum
+
+
+def test_raise_exception_when_checksum_not_found(manifest_list):
+    with pytest.raises(CDNFileNotFoundInManifest) as excinfo:
+        _get_checksum_for('nesmyslna/cesta.txt', manifest_list)
+
+    assert 'nesmyslna/cesta.txt not found in manifest' in str(excinfo.value)
+
+
+@cdn_manifest
+def test_download_mainifest_return_checksums_and_filenames_list(server):
+    result = tuple(_download_manifest(server + '/static/MANIFEST'))
+
+    assert all(map(lambda i: isinstance(i[0], six.text_type) and isinstance(i[1], six.text_type), result))
+    assert all(map(lambda i: len(i[0]) == 32 and len(i[1]) > 0, result))
+
+
+@cdn_manifest
+def test_download_manifest_raise_error_when_bad_url_is_given(server):
+    with pytest.raises(CDNManifestUrlError) as excinfo:
+        _download_manifest(server + '/hokus/pokus/fokus')
+
+    assert '404' in str(excinfo.value)

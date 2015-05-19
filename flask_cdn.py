@@ -1,25 +1,45 @@
 import os
 
+import requests
+
 from flask import url_for as flask_url_for
 from flask import current_app, request
+
+
+class CDNManifestUrlError(Exception):
+    pass
+
+
+class CDNFileNotFoundInManifest(Exception):
+    pass
 
 
 def _download_manifest(url):
     '''
     Download MANIFEST file from `url`.
     '''
-    pass
+    response = requests.get(url)
+
+    if not response.ok:
+        raise CDNManifestUrlError('%d - %s' % (response.status_code, response.reason))
+
+    raw_list = (line.split() for line in response.text.splitlines())
+    cleaned = filter(lambda item: hasattr(item, '__iter__') and len(item) == 2, raw_list)
+
+    return cleaned
 
 
 def _get_checksum_for(path, checksums):
     """
     Return checksum for `path`.
 
-    Find checksum for given path.
+    Find checksum in `checksums` for given `path`.
     """
     for checksum, file_path in checksums:
         if file_path == path:
             return checksum
+
+    raise CDNFileNotFoundInManifest('%s not found in manifest' % path)
 
 
 def url_for(endpoint, **values):
