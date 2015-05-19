@@ -4,14 +4,22 @@ from flask import url_for as flask_url_for
 from flask import current_app, request
 
 
-def _get_checksum_for(path):
+def _download_manifest(url):
+    '''
+    Download MANIFEST file from `url`.
+    '''
+    pass
+
+
+def _get_checksum_for(path, checksums):
     """
     Return checksum for `path`.
 
-    Download MANIFEST file from `CDN_MANIFEST_URL`
-    and find checksum for given path.
+    Find checksum for given path.
     """
-    pass
+    for checksum, file_path in checksums:
+        if file_path == path:
+            return checksum
 
 
 def url_for(endpoint, **values):
@@ -50,7 +58,8 @@ def url_for(endpoint, **values):
             path = os.path.join(static_folder, values['filename'])
             values['t'] = int(os.path.getmtime(path))
         elif app.config['CDN_MANIFEST']:
-            values['c'] = _get_checksum_for(values['filename'])
+            path = urls.build(endpoint, {'filename': values['filename']}).lstrip('/')
+            values['c'] = _get_checksum_for(path, _download_manifest(app.config['CDN_MANIFEST_URL']))
 
         return urls.build(endpoint, values=values, force_external=True)
 
