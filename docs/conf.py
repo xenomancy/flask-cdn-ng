@@ -67,7 +67,7 @@ release = '0.1'
 exclude_patterns = ['_build']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
-default_role = 'obj' 
+default_role = 'obj'
 # affects stuff wrapped like `this`
 #default_role = None
 
@@ -246,7 +246,7 @@ texinfo_documents = [
 sys.path.append(os.path.abspath('_themes'))
 html_theme_path = ['_themes']
 html_theme = 'flask_small'
-html_theme_options = dict(github_fork='wichitacode/flask-cdn', 
+html_theme_options = dict(github_fork='s-m-i-t-a/flask-cdn-ng',
                           index_logo=False)
 
 
